@@ -1,0 +1,323 @@
+/*
+	File:		mbedTLS.unit
+	Project:	mbedTLS - Public NewtonScript Interface
+*/
+
+DefConst( 'kMBedTLSVersion, "2.16.6" );
+DefConst( 'kMbedTLSSymbol, kAppSymbol);
+DefConst( 'kMbedTLSMajor, 1 );
+DefConst( 'kMbedTLSMinor, 0 );
+
+// endpoint interface
+DefConst('MBEDTLS_SSL_VERIFY_NONE, 0);      // No verification happens
+DefConst('MBEDTLS_SSL_VERIFY_OPTIONAL, 1);  // Callbacks not implemented
+DefConst('MBEDTLS_SSL_VERIFY_REQUIRED, 2);  // Default
+
+DefConst('kCMOSSLEnable, "SSL ");
+// Enable SSL.
+// data: { arglist: [true], typelist: [kStruct, kBoolean,]}
+
+DefConst('kCMOSSLHostname, "SSLh");
+// Set the hostname. If not set, no certificate verification happens.
+// data: { arglist: [remoteHostStr], typelist: [kStruct, [kArray, kChar, 0]] }
+
+DefConst('kCMOSSLVerifyMode, "SSLv");
+// Set the verify mode. Only MBEDTLS_SSL_VERIFY_REQUIRED (default) and MBEDTLS_SSL_VERIFY_NONE are supported.
+// data: { arglist: [MBEDTLS_SSL_VERIFY_REQUIRED], typelist: [kStruct, kULong] }
+
+DefConst('kCMOSSLCertificateAuthority, "SSLA");
+// Set the root certificates to PEM or DER certificates. Several PEM certificates can be concatenated.
+// data: { arglist: [StrLen(pemStr) + 1, 0, pemStr], typelist: [kStruct, kULong, kULong, [kArray, kChar, 0]] }
+// data: { arglist: [Length(derArray), 0, derArray], typelist: [kStruct, kULong, kULong, [kArray, kChar, Length(derArray)]] }
+
+DefConst('kCMOSSLGetPeerCertificate, "SSLp");
+// Call twice to get first the size and then the certificate in DER format (as an array of bytes)
+// data: {arglist: [0, certIx], typelist: [kStruct, kULong, kULong]}
+// local cert := Array(size, 0);
+// data: {arglist: [size, certIx, cert], typelist: [kStruct, kULong, kULong, [kArray, kByte, size]]};
+
+// Low-level mbedtls access.
+DeclareUnit( kMbedTLSSymbol, kMbedTLSMajor, kMbedTLSMinor,
+{
+	mbedTLS: 0
+});
+
+// GetVersion: func()
+// mbedtls_version_get_string
+// You may want to compare the result of this function with kMBedTLSVersion
+
+// SSLListCiphersuites: func()
+// mbedtls_ssl_list_ciphersuites
+// Return the list of available ciphersuites, by name
+
+// EntropyNew: func()
+// mbedtls_entropy_init
+// Return a pointer encapsulated in a binary to an allocated and initialized structure
+// The structure will be garbage collected
+
+// CtrDrbgNew: func()
+// mbedtls_ctr_drbg_init
+// Return a pointer encapsulated in a binary to an allocated and initialized structure 
+// The structure will be garbage collected
+
+// CtrDrbgSeed: func(inCtrDrbgContextBin, inEntropyContextBin, inPers)
+// mbedtls_ctr_drbg_seed
+// Initialize the ctr drbg with entropy and a personalized binary (typically the Newton's serial number)
+
+// PKNew: func()
+// mbedtls_pk_init
+// Return a pointer encapsulated in a binary to an allocated and initialized structure 
+// The structure will be garbage collected
+
+// SSLNew: func()
+// mbedtls_ssl_init
+// Return a pointer encapsulated in a binary to an allocated and initialized structure 
+// The structure will be garbage collected
+
+// SSLCheckPending: func(inSSLBin)
+// mbedtls_ssl_check_pending
+
+// SSLCloseNotify: func(inSSLBin)
+// mbedtls_ssl_close_notify
+
+// SSLGetALPNProtocol: func(inSSLBin)
+// mbedtls_ssl_get_alpn_protocol
+
+// SSLGetBytesAvail: func(inSSLBin)
+// mbedtls_ssl_get_bytes_avail
+
+// SSLGetCiphersuite: func(inSSLBin)
+// mbedtls_ssl_get_ciphersuite
+
+// SSLGetMaxFragLen: func(inSSLBin)
+// mbedtls_ssl_get_max_frag_len
+
+// SSLGetMaxOutRecordPayload: func(inSSLBin)
+// mbedtls_ssl_get_max_frag_len
+
+// SSLGetPeerCert: func(inSSLBin)
+// mbedtls_ssl_get_peer_cert
+
+// SSLGetRecordExpansion: func(inSSLBin)
+// mbedtls_ssl_get_record_expansion
+
+// SSLGetSession: func(inSSLBin)
+// mbedtls_ssl_get_session
+
+// SSLGetVerifyResult: func(inSSLBin)
+// mbedtls_ssl_get_verify_result
+
+// SSLGetVersion: func(inSSLBin)
+// mbedtls_ssl_get_version
+
+// SSLHandshake: func(inSSLBin)
+// mbedtls_ssl_handshake
+
+// SSLHandshakeStep: func(inSSLBin)
+// mbedtls_ssl_handshake_step
+
+// SSLRead: func(inSSLBin, inLen)
+// mbedtls_ssl_read
+
+// SSLRenegotiate: func(inSSLBin)
+// mbedtls_ssl_renegotiate
+
+// SSLSendAlertMessage: func(inSSLBin, inLevel, inMessage)
+// mbedtls_ssl_send_alert_message
+// inLevel can be an integer or 'warning or 'fatal
+// inMessage should be an integer
+
+// SSLSessionReset: func(inSSLBin)
+// mbedtls_ssl_session_reset
+
+// SSLSetBIO: func(inSSLBin, inSendCb, inRecvCb)
+// mbedtls_ssl_set_bio
+// inSendCb is a function that takes a single argument (a binary) and returns
+// an integer (the number of bytes written or a negative error)
+// inRecvCb is a function that takes a single argument (a length) and returns
+// a binary or a negative error
+
+// SSLSetClientTransportID: func(inSSLBin, inTransportLevelInfo)
+// mbedtls_ssl_set_client_transport_id
+
+// SSLSetDatagramPacking: func(inSSLBin, inAllowPacking)
+// mbedtls_ssl_set_datagram_packing
+
+// SSLSetHostname: func(inSSLBin, inHostname)
+// mbedtls_ssl_set_hostname
+// inHostname can be NIL
+
+// SSLSetHsAuthMode: func(inSSLBin, inAuthmode)
+// mbedtls_ssl_set_hs_authmode
+// inAuthMode can be 'none, 'optional or 'required or MBEDTLS_SSL_VERIFY_*
+
+// SSLSetHsCAChain: func(inSSLBin, inX509CrtBin, inX509CrlBin)
+
+// SSLSetHsOwnCert: func(inSSLBin, inX509CrtBin, inPKBin)
+
+// SSLSetHsPSK: func(inSSLBin, inPSKBin)
+
+// SSLSetMTU: func(inSSLBin, inMTU)
+
+// SSLSetSession: func(inSSLBin, inSession)
+
+// SSLSetTimerCb: func(inSSLBin, inSetTimerCb, inGetTimerCb)
+
+// SSLSetup: func(inSSLBin, inSSLConfigBin)
+
+// SSLWrite: func(inSSLBin, inData)
+
+// SSLCacheNew: func()
+// Return a pointer encapsulated in a binary to an allocated and initialized structure
+// The structure will be garbage collected
+
+// SSLCacheSetMaxEntries: func(inSSLCacheBin, inMaxEntries)
+
+// SSLCacheSetTimeout: func(inSSLCacheBin, inTimeout)
+
+// SSLConfigNew: func()
+// Return a pointer encapsulated in a binary to an allocated and initialized structure
+// The structure will be garbage collected
+
+// SSLConfALPNProtocol: func(inSSLConfigBin, inProtos)
+
+// SSLConfARC4Support: func(inSSLConfigBin, inARC4)
+
+// SSLConfAuthMode: func(inSSLConfigBin, inAuthMode)
+// mbedtls_ssl_conf_authmode
+// authmode can be 'none, 'optional or 'required or MBEDTLS_SSL_VERIFY_*
+
+// SSLConfCAChain: func(inSSLConfigBin, inX509CrtBin, inX509CrlBin)
+// mbedtls_ssl_conf_ca_chain
+// if inX509CrtBin or inX509CrlBin are NIL, NULL is passed.
+
+// SSLConfCbcRecordSplitting: func(inSSLConfigBin, inSplit)
+
+// SSLConfCertProfile: func(inSSLConfigBin, inCrtbin)
+
+// SSLConfCertReqCAList: func(inSSLConfigBin, inCertReqCAList)
+
+// SSLConfCiphersuites: func(inSSLConfigBin, inCiphersuites)
+
+// SSLConfCiphersuitesForVersion: func(inSSLConfigBin, inCiphersuites, inMajor, inMinor)
+
+// SSLConfCurves: func(inSSLConfigBin, inCurves)
+
+// SSLConfDbg: func(inSSLConfigBin, inDebugCb)
+
+// SSLConfDHParamBin: func(inSSLConfigBin, inDHMP, inDHMG)
+
+// SSLConfDHParamCtx: func(inSSLConfigBin, inDHMContextBin)
+
+// SSLConfDHMMinBitlen: func(inSSLConfigBin, inBitlen)
+
+// SSLConfDTLSAntiReplay: func(inSSLConfigBin, inMode)
+
+// SSLConfDTLSBadMACLimit: func(inSSLConfigBin, inLimit)
+
+// SSLConfDTLSCookies: func(inSSLConfigBin, inCookiesWriteCb, inCookiesCheckCb)
+
+// SSLConfEncryptThenMac: func(inSSLConfigBin, inETM)
+
+// SSLConfEndpoint: func(inSSLConfigBin, inEndpoint)
+
+// SSLConfExportKeysCb: func(inSSLConfigBin, inExportKeysCb)
+
+// SSLConfExtendedMasterSecret: func(inSSLConfigBin, inEMS)
+
+// SSLConfFallback: func(inSSLConfigBin, inFallback)
+
+// SSLConfHandshakeTimeout: func(inSSLConfigBin, inMin, inMax)
+
+// SSLConfLegacyRenegotiation: func(inSSLConfigBin, inAllowLegacy)
+
+// SSLConfMaxFragLen: func(inSSLConfigBin, inMaxFragLen)
+
+// SSLConfMaxVersion: func(inSSLConfigBin, inMajor, inMinor)
+
+// SSLConfMinVersion: func(inSSLConfigBin, inMajor, inMinor)
+
+// SSLConfOwnCert: func(inSSLConfigBin, inCrtBin, inPkBin)
+
+// SSLConfPSK: func(inSSLConfigBin, inPSK, inPSKIdentity)
+
+// SSLConfPSKCb: func(inSSLConfigBin, inPSKCb)
+
+// SSLConfRenegotiation: func(inSSLConfigBin, inRenegotiation)
+
+// SSLConfRenegotiationEnforced: func(inSSLConfigBin, inMaxRecords)
+
+// SSLConfRenegotiationPeriod: func(inSSLConfigBin, inPeriod)
+
+// SSLConfRng: func(inSSLConfigBin, inCtrDrbgContextBin)
+// mbedtls_ssl_conf_rng
+
+// SSLConfSessionCache: func(inSSLConfigBin, inCacheBin)
+
+// SSLConfSessionTickets: func(inSSLConfigBin, inUseTickets)
+
+// SSLConfSessionTicketsCb: func(inSSLConfigBin, inTicketWriteCb, inTicketParseCb)
+
+// SSLConfSigHashes: func(inSSLConfigBin, inSigHashes)
+
+// SSLConfSNI: func(inSSLConfigBin, inSNICb)
+
+// SSLConfTransport: func(inSSLConfigBin, inTransport)
+
+// SSLConfTruncatedHMAC: func(inSSLConfigBin, inTruncate)
+
+// SSLConfVerify: func(inSSLConfigBin, inVerifyCb)
+
+// SSLConfigDefaults: func(inSSLConfigBin, inEndpoint, inTransport)
+// mbedtls_ssl_config_defaults
+// inEndpoint can be 'client or 'server
+// inTransport can be 'stream or 'datagram
+
+// SSLSessionNew: func()
+// Return a pointer encapsulated in a binary to an allocated and initialized structure
+// The structure will be garbage collected
+
+// X509CrlNew: func()
+// mbedtls_x509_crl_init
+// Return a pointer encapsulated in a binary to an allocated and initialized structure
+// The structure will be garbage collected
+
+// X509CrlParse: func(inX509CrlBin, inCRLBin)
+// mbedtls_x509_crl_parse
+
+// X509CrtNew: func()
+// mbedtls_x509_crt_init
+// Return a pointer encapsulated in a binary to an allocated and initialized structure
+// The structure will be garbage collected
+
+// X509CrtParse: func(inX509CrtBin, inCertificateBin)
+// mbedtls_x509_crt_parse
+// certificate can be one or several certificates in PEM format or a single certificate in DER
+// certificate are added to the chain.
+
+// X509CrtCount: func(inX509CrtBin)
+// Return the number of certificates in the chain.
+
+// X509CrtGetDER: func(inX509CrtBin, inIndex)
+// Get a certificate in DER format.
+
+// X509CrtGetVersion: func(inX509CrtBin, inIndex)
+// Get a certificate's version (1: v1, 2: v2, 3: v3)
+
+// X509CrtGetSerial: func(inX509CrtBin, inIndex)
+// Get a certificate's serial number
+
+// X509CrtGetIssuerName: func(inX509CrtBin, inIndex)
+// Get a certificate's issuer name
+
+// X509CrtGetSubjectName: func(inX509CrtBin, inIndex)
+// Get a certificate's subject name
+
+// X509CrtGetIssueDate: func(inX509CrtBin, inIndex)
+// Get a certificate's issue date, converted to minutes since 1904, UTC
+
+// X509CrtGetExpirationDate: func(inX509CrtBin, inIndex)
+// Get a certificate's expiration date, converted to minutes since 1904, UTC
+
+// X509CrtGetSignatureAlgorithm: func(inX509CrtBin, inIndex)
+// Get a certificate's signature algorithm

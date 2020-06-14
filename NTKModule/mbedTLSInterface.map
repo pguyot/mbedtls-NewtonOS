@@ -1,0 +1,120 @@
+mbedTLS_1.0 {
+  global:
+    GetVersion;
+    SSLListCiphersuites;
+
+    EntropyNew;
+
+    CtrDrbgNew;
+    CtrDrbgSeed;
+
+    PKNew;
+
+    SSLNew;
+    SSLCheckPending;
+    SSLCloseNotify;
+    SSLGetALPNProtocol;
+    SSLGetBytesAvail;
+    SSLGetCiphersuite;
+    SSLGetMaxFragLen;
+    SSLGetMaxOutRecordPayload;
+    SSLGetPeerCert;
+    SSLGetRecordExpansion;
+    SSLGetSession;
+    SSLGetVerifyResult;
+    SSLGetVersion;
+    SSLHandshake;
+    SSLHandshakeStep;
+    SSLRead;
+    SSLRenegotiate;
+    SSLSendAlertMessage;
+    SSLSessionReset;
+    SSLSetBIO;
+    SSLSetClientTransportID;
+    SSLSetDatagramPacking;
+    SSLSetHostname;
+    SSLSetHsAuthMode;
+    SSLSetHsCAChain;
+    SSLSetHsOwnCert;
+    SSLSetHsPSK;
+    SSLSetMTU;
+    SSLSetSession;
+    SSLSetTimerCb;
+    SSLSetup;
+    SSLWrite;
+
+    SSLCacheNew;
+    SSLCacheSetMaxEntries;
+    SSLCacheSetTimeout;
+
+    SSLConfigNew;
+    SSLConfALPNProtocol;
+    SSLConfARC4Support;
+    SSLConfAuthMode;
+    SSLConfCAChain;
+    SSLConfCbcRecordSplitting;
+    SSLConfCertProfile;
+    SSLConfCertReqCAList;
+    SSLConfCiphersuites;
+    SSLConfCiphersuitesForVersion;
+    SSLConfCurves;
+    SSLConfDbg;
+    SSLConfDHParamBin;
+    SSLConfDHParamCtx;
+    SSLConfDHMMinBitlen;
+    SSLConfDTLSAntiReplay;
+    SSLConfDTLSBadMACLimit;
+    SSLConfDTLSCookies;
+    SSLConfEncryptThenMac;
+    SSLConfEndpoint;
+    SSLConfExportKeysCb;
+    SSLConfExtendedMasterSecret;
+    SSLConfFallback;
+    SSLConfHandshakeTimeout;
+    SSLConfLegacyRenegotiation;
+    SSLConfMaxFragLen;
+    SSLConfMaxVersion;
+    SSLConfMinVersion;
+    SSLConfOwnCert;
+    SSLConfPSK;
+    SSLConfPSKCb;
+    SSLConfRenegotiation;
+    SSLConfRenegotiationEnforced;
+    SSLConfRenegotiationPeriod;
+    SSLConfRng;
+    SSLConfSessionCache;
+    SSLConfSessionTickets;
+    SSLConfSessionTicketsCb;
+    SSLConfSigHashes;
+    SSLConfSNI;
+    SSLConfTransport;
+    SSLConfTruncatedHMAC;
+    SSLConfVerify;
+    SSLConfigDefaults;
+
+    SSLSessionNew;
+
+    X509CrlNew;
+    X509CrlParse;
+
+    X509CrtNew;
+    X509CrtParse;
+    X509CrtCount;
+    X509CrtGetDER;
+    X509CrtGetVersion;
+    X509CrtGetSerialNumber;
+    X509CrtGetIssuerName;
+    X509CrtGetSubjectName;
+    X509CrtGetIssueDate;
+    X509CrtGetExpirationDate;
+    X509CrtGetSignatureAlgorithm;
+
+    Install;
+    Remove;
+
+    InstallConnectionEnd;
+    RemoveConnectionEnd;
+
+  local:
+    *;
+};
