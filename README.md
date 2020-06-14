@@ -12,6 +12,8 @@ https://github.com/mpaland/printf
 # For end-users
 
 Install `mbedTLS.pkg` package. This allow third-party applications to use SSL.
+Make sure Newton's date is set properly as certificate issue and expiration
+dates are checked. You will need [Eckhart Köppen's system patch](https://40hz.org/Pages/newton/hacking/newton-year-2010-problem/).
 
 ## Compatible software
 
